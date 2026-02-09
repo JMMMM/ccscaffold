@@ -2,18 +2,20 @@
 
 <!--
 Sync Impact Report:
-- Version change: 1.2.0 → 1.3.0
-- Added Principle IX: 跨平台可移植性优先原则 (Cross-Platform Portability Priority)
-  - 平台兼容性强制要求 (Platform Compatibility Requirements)
-  - 性能与可移植性权衡规则 (Performance vs Portability Trade-offs)
-  - 平台特定优化策略 (Platform-Specific Optimization Strategy)
-  - 移植交互模式要求 (Interactive Migration Mode)
-- Updated all templates to include cross-platform portability compliance checks
+- Version change: 1.3.0 -> 1.4.0
+- Added Principle X: 隐私保护与信息安全原则 (Privacy Protection and Information Security)
+  - Git 提交隐私检查强制要求 (Git Commit Privacy Inspection Requirements)
+  - 敏感信息识别与处理规范 (Sensitive Information Identification and Handling)
+  - 隐私合规审查清单 (Privacy Compliance Review Checklist)
+  - 数据脱敏与匿名化要求 (Data Masking and Anonymization Requirements)
+- Updated all templates to include privacy compliance checks
 - Template review:
-  ✅ plan-template.md - 已添加跨平台兼容性检查项
-  ✅ spec-template.md - 已添加跨平台需求
-  ✅ tasks-template.md - 已添加跨平台合规清单
-- Follow-up: 审查现有功能组件的跨平台兼容性并提供优化方案
+  - plan-template.md - 已添加隐私合规检查项
+  - spec-template.md - 已添加隐私需求 (FR-018 ~ FR-022)
+  - tasks-template.md - 已添加隐私合规清单
+  - checklist-template.md - 已添加隐私检查项 (CHK025 ~ CHK033)
+  - agent-file-template.md - 已添加隐私安全规范
+- Follow-up: 审查现有代码和提交历史,确保符合新的隐私保护要求
 -->
 
 ## Core Principles
@@ -454,6 +456,244 @@ def interactive_platform_selection():
 - **用户体验**: 交互模式简化跨平台部署流程
 - **未来扩展**: 清晰的平台分层便于添加新平台支持
 
+### X. 隐私保护与信息安全原则 (Privacy Protection and Information Security)
+
+**规则:**
+
+#### X.1 Git 提交隐私检查强制要求 (Git Commit Privacy Inspection Requirements)
+
+所有 Git 提交内容必须经过隐私安全检查,防止敏感信息泄露:
+
+**禁止提交的敏感信息类型:**
+- **系统文件路径**: 包含用户特定目录结构的绝对路径
+  - 例如: `/Users/username/Documents/`, `C:\Users\username\Desktop\`
+  - 例如: `/home/username/projects/`, `/Users/ming/Work/`
+- **用户隐私信息**: 个人身份识别信息 (PII)
+  - 电子邮件地址 (email addresses)
+  - 电话号码 (phone numbers)
+  - 真实姓名或用户名 (real names or usernames)
+  - 家庭住址或物理位置 (home addresses or physical locations)
+- **认证凭据**: 所有类型的访问凭证
+  - 密码明文或哈希值 (passwords in plaintext or hash)
+  - API 密钥 (API keys)
+  - 访问令牌 (access tokens)
+  - 私钥文件 (private keys)
+  - 证书文件 (certificates with private keys)
+  - 数据库连接字符串 (database connection strings)
+- **环境配置**: 特定于部署环境的配置
+  - `.env` 文件内容
+  - 特定的 IP 地址和端口
+  - 内部网络配置
+  - 云服务凭证 (AWS, Azure, GCP 等)
+- **临时和缓存数据**: 不应提交的运行时数据
+  - 日志文件包含敏感信息
+  - 缓存文件
+  - 会话数据
+  - 临时文件
+
+**Git 提交前检查清单:**
+```bash
+# 提交前必须执行的检查命令
+git diff --cached | grep -E "(password|secret|key|token|api_key|@.*\..*@|/Users/|/home/|C:\\Users\\)"
+```
+
+#### X.2 敏感信息识别与处理规范 (Sensitive Information Identification and Handling)
+
+**敏感信息模式识别 (正则表达式):**
+
+```python
+# 电子邮件地址
+EMAIL_PATTERN = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+
+# 绝对路径 - Unix-like
+UNIX_PATH_PATTERN = r'/(home|Users|var|tmp)/[^/]+'
+
+# 绝对路径 - Windows
+WINDOWS_PATH_PATTERN = r'[A-Z]:\\(Users|Program Files|Documents)[^\\]*'
+
+# API 密钥常见模式
+API_KEY_PATTERN = r'(api[_-]?key|apikey|access[_-]?token)[\s:=]+["\']?[A-Za-z0-9_\-]{16,}'
+
+# 密码字段
+PASSWORD_PATTERN = r'(password|passwd|pwd)[\s:=]+["\']?[^\s"\']+'
+
+# IP 地址
+IP_PATTERN = r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b'
+
+# URL 中的凭证
+URL_CREDENTIALS_PATTERN = r'://[^:@]+:[^@]+@'
+```
+
+**敏感信息处理策略:**
+
+1. **环境变量替代**:
+```python
+# 不好的示例 - 硬编码敏感信息
+API_KEY = "sk-1234567890abcdef"
+DATABASE_URL = "postgresql://user:password@localhost/db"
+
+# 好的示例 - 使用环境变量
+import os
+API_KEY = os.getenv("API_KEY")
+DATABASE_URL = os.getenv("DATABASE_URL")
+```
+
+2. **配置文件模板**:
+```bash
+# .env.example - 提交此模板
+API_KEY=your_api_key_here
+DATABASE_URL=postgresql://user:password@localhost/db
+EMAIL=your_email@example.com
+
+# .env - 添加到 .gitignore
+API_KEY=sk-actual-key-here
+DATABASE_URL=postgresql://realuser:realpass@localhost/db
+EMAIL=user@example.com
+```
+
+3. **日志脱敏**:
+```python
+def sanitize_log_message(message: str) -> str:
+    """脱敏日志消息中的敏感信息"""
+    import re
+
+    # 脱敏电子邮件
+    message = re.sub(r'\b[A-Za-z0-9._%+-]+@', '***@', message)
+
+    # 脱敏文件路径中的用户名
+    message = re.sub(r'/(Users|home)/[^/]+', r'/\1/***', message)
+
+    # 脱敏 IP 地址
+    message = re.sub(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b', '***.***.***.***', message)
+
+    return message
+```
+
+#### X.3 隐私合规审查清单 (Privacy Compliance Review Checklist)
+
+**提交前必须检查的项目:**
+
+- [ ] **文件路径检查**: 无绝对路径包含用户目录名
+  - [ ] 无 `/Users/username/` 或 `/home/username/` 路径
+  - [ ] 无 `C:\Users\username\` 路径
+  - [ ] 使用相对路径或环境变量替代
+
+- [ ] **个人信息检查**: 无个人身份识别信息
+  - [ ] 无真实电子邮件地址
+  - [ ] 无真实姓名或用户名
+  - [ ] 无电话号码
+  - [ ] 无物理地址
+
+- [ ] **凭据检查**: 无认证凭据泄露
+  - [ ] 无密码明文或哈希
+  - [ ] 无 API 密钥
+  - [ ] 无访问令牌
+  - [ ] 无私钥文件内容
+
+- [ ] **配置检查**: 无敏感配置信息
+  - [ ] `.env` 文件已在 `.gitignore` 中
+  - [ ] 无内部 IP 地址或端口
+  - [ ] 无云服务凭证
+
+- [ ] **日志和临时文件检查**: 无运行时敏感数据
+  - [ ] 日志文件已脱敏或添加到 `.gitignore`
+  - [ ] 临时文件目录在 `.gitignore` 中
+  - [ ] 缓存文件不会包含敏感信息
+
+**自动检查脚本示例:**
+```bash
+#!/bin/bash
+# privacy-check.sh - Git 提交前隐私检查脚本
+
+echo "正在进行隐私安全检查..."
+
+# 检查暂存区中的敏感信息
+SENSITIVE_PATTERNS=(
+    "password"
+    "secret"
+    "api[_-]?key"
+    "access[_-]?token"
+    "/Users/[^/]+"
+    "/home/[^/]+"
+    "C:\\\\Users\\\\[^\\\\]+"
+    "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+"
+)
+
+FOUND_ISSUES=0
+
+for pattern in "${SENSITIVE_PATTERNS[@]}"; do
+    if git diff --cached | grep -iE "$pattern" > /dev/null; then
+        echo "警告: 发现可能包含敏感信息的内容 (模式: $pattern)"
+        FOUND_ISSUES=1
+    fi
+done
+
+if [ $FOUND_ISSUES -eq 1 ]; then
+    echo "错误: 提交内容可能包含敏感信息,请检查后再提交"
+    exit 1
+else
+    echo "隐私检查通过"
+    exit 0
+fi
+```
+
+#### X.4 数据脱敏与匿名化要求 (Data Masking and Anonymization Requirements)
+
+**测试数据和示例数据脱敏:**
+
+1. **用户数据脱敏示例**:
+```python
+# 不好的示例 - 真实用户数据
+test_user = {
+    "name": "Zhang San",
+    "email": "zhangsan@example.com",
+    "phone": "13812345678",
+    "address": "北京市朝阳区xxx街道xxx号"
+}
+
+# 好的示例 - 脱敏测试数据
+test_user = {
+    "name": "Test User",
+    "email": "test@example.com",
+    "phone": "13800000000",
+    "address": "Test Address, Test City"
+}
+```
+
+2. **日志文件路径脱敏**:
+```python
+# 不好的示例 - 真实路径
+log_file = "/Users/ming/Work/ccscaffold/logs/app.log"
+
+# 好的示例 - 相对路径或占位符
+log_file = "logs/app.log"
+# 或
+log_file = "<PROJECT_ROOT>/logs/app.log"
+```
+
+3. **代码注释脱敏**:
+```python
+# 不好的示例 - 包含真实信息
+# TODO: 修复 zhangsan@example.com 的登录问题
+
+# 好的示例 - 脱敏注释
+# TODO: 修复用户登录问题 (邮件: test@example.com)
+```
+
+**数据匿名化原则:**
+- 所有测试数据必须使用虚构数据
+- 示例配置使用占位符而非真实值
+- 日志中的用户标识符应替换为通用标识
+- 截图或文档必须隐藏敏感信息
+
+**理由:**
+- **法律合规**: 符合 GDPR、CCPA 等数据保护法规要求
+- **安全防护**: 防止敏感信息泄露导致的安全风险
+- **职业责任**: 保护用户隐私是开发者的基本职业素养
+- **资产保护**: 防止代码仓库被滥用来获取敏感信息
+- **团队协作**: 确保代码库安全,方便团队协作和开源贡献
+- **审计安全**: 避免审计过程中的合规问题
+
 ## 组件结构规范
 
 每个功能组件应遵循以下目录结构:
@@ -515,6 +755,10 @@ component-name/
 - [重要注意事项 1]
 - [重要注意事项 2]
 
+## 隐私安全
+
+[说明该功能如何处理敏感信息,需要配置哪些环境变量]
+
 ## 故障排除
 
 [可选: 常见问题和解决方法]
@@ -569,6 +813,17 @@ component-name/
 - [ ] **在目标平台进行了测试**
 - [ ] **文档中说明平台兼容性和限制**
 
+#### 隐私安全检查 (PRINCIPLE X)
+- [ ] **Git 提交前已运行隐私检查脚本**
+- [ ] **无绝对路径包含用户目录名**
+- [ ] **无个人身份信息 (电子邮件、真实姓名、电话等)**
+- [ ] **无认证凭据 (密码、API 密钥、令牌等)**
+- [ ] **敏感配置使用环境变量或配置模板**
+- [ ] **测试数据已脱敏处理**
+- [ ] **日志输出不包含敏感信息**
+- [ ] **`.env` 等敏感文件已添加到 `.gitignore`**
+- [ ] **文档和注释中无真实敏感信息**
+
 ## 质量标准
 
 ### 可维护性
@@ -596,6 +851,16 @@ component-name/
 - **交互模式**: 移植工具必须提供交互式平台选择
 - **回退机制**: 平台特定代码必须有回退到跨平台实现的逻辑
 - **测试覆盖**: 每个功能必须在三个平台上进行测试
+
+### 隐私安全
+
+- **强制要求**: 所有 Git 提交必须通过隐私检查
+- **敏感信息**: 禁止提交任何类型的敏感信息
+- **环境变量**: 敏感配置必须使用环境变量
+- **数据脱敏**: 测试和示例数据必须脱敏
+- **日志安全**: 日志输出不得包含敏感信息
+- **配置管理**: 敏感配置文件必须加入 `.gitignore`
+- **定期审计**: 定期审查代码库和提交历史
 
 ### 文档完整性
 
@@ -626,6 +891,7 @@ component-name/
 - **所有功能组件必须检查 README.md 的存在和完整性**
 - **所有代码必须通过代码质量检查**
 - **所有功能必须通过跨平台可移植性检查**
+- **所有 Git 提交必须通过隐私安全检查**
 - **文件行数超过 1000 行必须提供拆分方案**
 - 复杂度增加必须有充分理由
 - 违反原则必须有明确的例外说明
@@ -637,7 +903,8 @@ component-name/
 - 定期审查和更新宪章内容
 - **持续关注代码质量,及时重构优化**
 - **优先考虑跨平台可移植性,再考虑性能优化**
+- **Git 提交前务必进行隐私安全检查**
 
 ---
 
-**Version**: 1.3.0 | **Ratified**: 2025-02-09 | **Last Amended**: 2026-02-09
+**Version**: 1.4.0 | **Ratified**: 2025-02-09 | **Last Amended**: 2026-02-09

@@ -40,17 +40,56 @@ obsidian-notes/
 .obsidian/
 
 # CC-Scaffold specific
-# 运行时生成的文件
-.claude/conversations/
-.claude/tmp/
-logs/
+# Claude Code 配置和运行时文件（包含敏感信息）
+.claude/
+
+# 会话记录和历史
 *.session_summary.txt
 *.conversation.txt
+
+# 运行时生成
+logs/
+.claude-hooks/
 
 # 临时文件
 *.tmp
 *.bak
 *.cache
 
-# 会话数据
-.claude-hooks/session_context.txt
+# Privacy and Security (Principle X)
+# 隐私和安全相关 - 防止敏感信息泄露
+# 敏感配置文件（包含 API 密钥、密码等）
+.env
+.env.local
+.env.*.local
+config/secrets/
+credentials/
+
+# 敏感日志（可能包含用户路径、IP 等）
+logs/*_private.log
+logs/*_sensitive.*
+logs/access.log
+logs/error.log
+
+# 测试/开发数据（可能包含真实用户信息）
+data/private/
+data/sensitive/
+data/users/
+
+# 证书和私钥
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+secrets/
+
+# 数据库备份（可能包含敏感数据）
+*.sql
+*.sqlite
+*.db
+
+# 临时分析输出（可能包含敏感信息）
+.claude/tmp/analysis/
+.claude/tmp/cache/sensitive/

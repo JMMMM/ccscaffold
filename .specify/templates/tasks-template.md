@@ -190,6 +190,12 @@ Before marking any task complete, verify:
 - [ ] **Migration tools provide interactive platform selection**
 - [ ] **Feature tested on all three target platforms**
 - [ ] **Documentation includes platform compatibility notes and limitations**
+- [ ] **Git commits pass privacy security checks**
+- [ ] **No sensitive information (absolute paths, emails, credentials) in code**
+- [ ] **Sensitive configurations use environment variables or templates**
+- [ ] **Test data is anonymized and masked**
+- [ ] **Log output does not contain sensitive information**
+- [ ] **`.env` and other sensitive files added to `.gitignore`**
 
 ---
 

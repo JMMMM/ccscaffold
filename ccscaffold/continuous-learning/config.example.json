@@ -1,0 +1,18 @@
+{
+  "max_conversations": 20,
+  "retry_threshold": 3,
+  "conversation_file": ".claude/conversations/conversation.txt",
+  "skills_output_dir": ".claude/skills/learn",
+  "state_file": ".claude/skills/continuous-learning/state.json",
+  "keywords": {
+    "retry": ["修复", "修正", "解决", "还是不行", "还是有问题", "继续", "再试", "失败", "错误"],
+    "issues": ["问题", "bug", "错误", "失败", "不正确"]
+  },
+  "_comment": "配置说明：",
+  "_max_conversations": "读取对话的最大条数，默认 20",
+  "_retry_threshold": "触发技能生成的反复次数阈值，默认 3",
+  "_conversation_file": "对话文件路径，相对于项目根目录",
+  "_skills_output_dir": "生成的技能保存目录，相对于项目根目录",
+  "_state_file": "状态文件路径，用于跟踪已处理的对话位置",
+  "_keywords": "用于检测问题的关键词列表"
+}

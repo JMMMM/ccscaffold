@@ -96,26 +96,94 @@ def call_claude_for_summary(conversation, modifications):
     return temp_file
 
 
+def extract_file_modifications(conversation_text):
+    """从 conversation.txt 中提取文件修改记录，生成 git log 格式
+    仅读取 Output 部分获取实际修改的文件
+    """
+    import re
+
+    # 按行分割
+    lines = conversation_text.split('\n')
+
+    modifications = []  # [(reason, [files])]
+
+    current_reason = None
+    current_files = []
+
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+
+        # 检测用户输入行（可能是修改原因）
+        if line.endswith('user>'):
+            # 如果之前有待处理的修改，先保存
+            if current_reason and current_files:
+                modifications.append((current_reason, list(set(current_files))))
+
+            # 提取新的用户输入
+            user_input = line.split('user>', 1)[1].strip()
+            current_reason = user_input if user_input else None
+            current_files = []
+
+        # 检测 Output 行（工具执行结果）
+        elif line.startswith('Output:'):
+            # 查找 filePath 字段（Edit/Write 工具的返回值包含实际修改的文件路径）
+            # 可能跨越多行，读取接下来的几行
+            j = i + 1
+            output_lines = [line]
+            while j < len(lines) and not lines[j].strip().startswith(('2026-', 'Output:', 'user>', 'claude>')):
+                output_lines.append(lines[j])
+                j += 1
+            output_text = ''.join(output_lines)
+
+            # 提取 filePath (Edit/Write 工具返回值)
+            match = re.search(r'"filePath":\s*"([^"]+)"', output_text)
+            if match:
+                file_path = match.group(1)
+                # 转换为相对路径
+                project_root = get_project_root()
+                try:
+                    rel_path = Path(file_path).relative_to(project_root)
+                    file_display = str(rel_path)
+                except:
+                    file_display = file_path
+
+                current_files.append(file_display)
+
+        i += 1
+
+    # 保存最后一次修改
+    if current_reason and current_files:
+        modifications.append((current_reason, list(set(current_files))))
+
+    # 构建结果
+    result = []
+    for reason, files in modifications:
+        if files:
+            result.append(f"[change] {reason}, 修改以下文件：")
+            for f in sorted(set(files)):
+                result.append(f"- {f}")
+            result.append("")  # 空行分隔
+
+    return '\n'.join(result) if result else "本次会话没有文件修改记录。"
+
+
 def generate_session_summary():
     """生成会话总结"""
     # 读取会话内容
     conversation = read_file_content(CONFIG["conversation_file"])
 
     if not conversation:
-        return "本次会话没有记录内容。"
+        return None
 
-    # 获取文件修改记录
-    modifications = get_file_modifications()
+    # 从 conversation.txt 中提取文件修改记录
+    modifications = extract_file_modifications(conversation)
 
-    # 生成总结标题
+    # 生成总结
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    summary = f"# 会话总结\n"
-    summary += f"# 生成时间: {timestamp}\n\n"
-    summary += f"## 会话内容摘要\n\n"
-    summary += f"{conversation}\n\n"
-    summary += f"## 文件修改记录\n\n"
-    summary += f"{modifications}\n\n"
-    summary += f"# " + "=" * 60 + "\n"
+    summary = f"# {timestamp}\n"
+    summary += f"{modifications}\n"
+    summary += f"# " + "-" * 60 + "\n"
 
     return summary
 

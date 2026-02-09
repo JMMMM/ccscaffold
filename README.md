@@ -263,6 +263,40 @@ python3.9 script.py
 - **文件命名**: 脚本文件使用英文命名
 - **README 要求**: 每个功能必须包含 README.md
 
+### 隐私保护 (Principle X)
+
+根据 CC-Scaffold 宪章 Principle X，项目包含隐私保护机制：
+
+- **Git 提交检查**: 自动检测并阻止包含敏感信息的提交
+- **数据脱敏工具**: 提供日志和路径脱敏功能
+- **环境变量**: 敏感配置必须使用环境变量
+- **定期审计**: 定期审查代码库和提交历史
+
+**安装 Git 钩子:**
+```bash
+# Bash 脚本安装
+bash scripts/git/install_git_hooks.sh
+
+# 或使用 Python 脚本安装
+python39 scripts/git/install_git_hooks.py
+```
+
+**使用隐私工具:**
+```python
+from ccscaffold.utils.privacy_utils import PrivacySanitizer, safe_print_path
+
+# 脱敏字符串
+sanitized = PrivacySanitizer.sanitize_string("user@example.com")
+
+# 脱敏日志
+safe_log = PrivacySanitizer.sanitize_log_message(log_message)
+
+# 安全打印路径
+safe_print_path(file_path, "文件路径")
+```
+
+**详细文档:** [scripts/git/README.md](scripts/git/README.md)
+
 ## 注意事项
 
 1. **备份重要**: 安装功能前建议备份项目
@@ -320,8 +354,8 @@ MIT License
 - [组件打包功能](package-skills/README.md)
 - [SpecKit Agent 功能](speckitAgent/README.md)
 - [SpecKit Agent 使用指南](speckitAgent/docs/speckit-agent.md)
+- [Git 隐私检查工具](scripts/git/README.md)
 
 ---
 
-**版本**: 2.0.0
-**最后更新**: 2025-02-09
+**版本**: 2.2.0 | **宪章版本**: 1.4.0 | **最后更新**: 2026-02-09

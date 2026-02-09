@@ -22,9 +22,12 @@ MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB，超过则清空重新开始
 
 def get_project_root():
     """获取项目根目录"""
-    # 获取脚本所在目录的父目录的父目录（ccscaffold 目录）
-    script_dir = Path(__file__).parent.absolute()
-    return script_dir.parent.parent
+    # 获取脚本所在目录的父目录的父目录的父目录（项目根目录）
+    # 脚本位置: .claude/skills/chat-recorder/chat_recorder.py
+    # 需要返回: 项目根目录
+    script_dir = Path(__file__).resolve().parent
+    # script/chat-recorder -> skills -> .claude -> project_root
+    return script_dir.parent.parent.parent
 
 
 def get_conversation_file():
