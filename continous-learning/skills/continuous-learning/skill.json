@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "name": "continuous-learning",
+  "description": "持续学习功能 - 分析对话中反复出现的问题并生成修复 skill",
+  "version": "1.0.0",
+  "commands": [
+    {
+      "name": "summary-skills",
+      "description": "分析当前对话内容,检测反复修改失败的情况并生成修复 skill",
+      "matcher": "/summary-skills",
+      "handler": "python3 ${PROJECT_DIR}/skills/continuous-learning/scripts/summary_skills.py"
+    }
+  ],
+  "configuration": {
+    "learns_dir": "skills/learns",
+    "retry_threshold": 3
+  }
+}

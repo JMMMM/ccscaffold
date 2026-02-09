@@ -1,0 +1,18 @@
+{
+  "name": "ccscaffold",
+  "version": "1.0.0",
+  "description": "Claude Code 经验管理与快速迁移工具",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "claude-code",
+    "skills",
+    "agents",
+    "hooks",
+    "scaffold"
+  ],
+  "author": "",
+  "license": "MIT"
+}

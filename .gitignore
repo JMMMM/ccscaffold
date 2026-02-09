@@ -1,0 +1,56 @@
+# Node.js
+node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+dist/
+build/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Obsidian
+obsidian-notes/
+.obsidian/
+
+# CC-Scaffold specific
+# 运行时生成的文件
+.claude/conversations/
+.claude/tmp/
+logs/
+*.session_summary.txt
+*.conversation.txt
+
+# 临时文件
+*.tmp
+*.bak
+*.cache
+
+# 会话数据
+.claude-hooks/session_context.txt

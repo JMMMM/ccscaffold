@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "name": "component-packager",
+  "description": "Claude Code 组件打包工具 - 支持打包 skills/hooks/agents/commands",
+  "version": "2.0.0",
+  "configuration": {
+    "skills_dir": "skills",
+    "hooks_dir": "hooks",
+    "agents_dir": "agents",
+    "commands_dir": "commands",
+    "output_dir": "dist"
+  }
+}
