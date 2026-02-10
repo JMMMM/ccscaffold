@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.9
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Install Git Hooks Script (Python version)
@@ -9,6 +9,15 @@ import os
 import sys
 import shutil
 from pathlib import Path
+
+# 添加项目根目录到 Python 路径
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
+from ccscaffold.utils import (
+    find_python_command,
+    make_executable,
+    is_unix
+)
 
 
 def get_project_root():
@@ -28,6 +37,15 @@ def install_hooks():
         print("请确保在项目根目录运行此脚本")
         return False
 
+    # 检测 Python 命令
+    python_cmd = find_python_command(min_version='3.9')
+    if not python_cmd:
+        print("警告: 未检测到 Python 3.9 或更高版本")
+        print("使用 'python3' 作为默认命令")
+        python_cmd = 'python3'
+
+    print(f"使用 Python 命令: {python_cmd}")
+
     # 钩子目录
     hooks_dir = git_dir / 'hooks'
 
@@ -35,29 +53,29 @@ def install_hooks():
     hooks_dir.mkdir(parents=True, exist_ok=True)
 
     # pre-commit 钩子内容
-    pre_commit_content = """#!/usr/bin/env bash
+    pre_commit_content = f"""#!/usr/bin/env bash
 #
 # Git Pre-commit Hook - Privacy Check
 # Git 提交前隐私检查钩子
 #
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-PRIVACY_CHECK_SCRIPT="${PROJECT_ROOT}/scripts/git/privacy_check.py"
+SCRIPT_DIR="$(cd "$(dirname "${{BASH_SOURCE[0]}}")" && pwd)"
+PROJECT_ROOT="$(cd "${{SCRIPT_DIR}}/../.." && pwd)"
+PRIVACY_CHECK_SCRIPT="${{PROJECT_ROOT}}/scripts/git/privacy_check.py"
 
 # 检查隐私检查脚本是否存在
-if [ -f "${PRIVACY_CHECK_SCRIPT}" ]; then
-    python39 "${PRIVACY_CHECK_SCRIPT}"
+if [ -f "${{PRIVACY_CHECK_SCRIPT}}" ]; then
+    {python_cmd} "${{PRIVACY_CHECK_SCRIPT}}"
     EXIT_CODE=$?
 
-    if [ ${EXIT_CODE} -ne 0 ]; then
+    if [ ${{EXIT_CODE}} -ne 0 ]; then
         echo ""
         echo "警告: 提交被阻止 - 检测到敏感信息"
         echo "使用 'git commit --no-verify' 跳过检查（不推荐）"
         exit 1
     fi
 else
-    echo "警告: 隐私检查脚本不存在: ${PRIVACY_CHECK_SCRIPT}"
+    echo "警告: 隐私检查脚本不存在: ${{PRIVACY_CHECK_SCRIPT}}"
     echo "继续提交..."
 fi
 
@@ -69,8 +87,9 @@ exit 0
     with open(pre_commit_file, 'w', encoding='utf-8') as f:
         f.write(pre_commit_content)
 
-    # 设置可执行权限
-    pre_commit_file.chmod(0o755)
+    # 设置可执行权限（仅 Unix-like 系统）
+    if is_unix():
+        make_executable(pre_commit_file)
 
     return True
 

@@ -33,7 +33,7 @@
 **示例**:
 ```
 2026-02-09 20:49:40 claude> Tool: Read
-  Input: {"file_path": "/Users/ming/Work/stock_analysis/..."}
+  Input: {"file_path": "/path/to/project/..."}
 
 2026-02-09 20:56:11 user> 测试修复后的记录
 ```
@@ -46,7 +46,7 @@
 
 ## 测试数据分析
 
-**数据来源**: `/Users/ming/Work/stock_analysis/.claude/conversations/conversation.txt`
+**数据来源**: `/path/to/source/.claude/conversations/conversation.txt`
 
 **问题模式识别**:
 

@@ -24,8 +24,8 @@ python3 .claude/skills/chat-recorder/deploy.py /path/to/target-project
 
 ```bash
 # 如果已经在目标项目的 chat-recorder 目录中
-cd /root/software/stock_analysis/.claude/skills/chat-recorder
-python3.9 deploy.py /root/software/stock_analysis
+cd /path/to/target-project/.claude/skills/chat-recorder
+python3.9 deploy.py /path/to/target-project
 
 # 或者使用相对路径
 python3.9 deploy.py ..      # 部署到父目录

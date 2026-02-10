@@ -161,6 +161,16 @@ def deploy_to_target(target_dir, python_cmd=None):
     shutil.copytree(cl_hooks_src, cl_hooks_dst)
     print(f"   ✓ continuous-learning hooks 已部署")
 
+    # 部署 console-cleaner hooks
+    console_hooks_src = ccscaffold_root / '.claude' / 'scripts' / 'hooks' / 'console-cleaner'
+    console_hooks_dst = target_scripts_hooks / 'console-cleaner'
+
+    if console_hooks_src.exists():
+        if console_hooks_dst.exists():
+            shutil.rmtree(console_hooks_dst)
+        shutil.copytree(console_hooks_src, console_hooks_dst)
+        print(f"   ✓ console-cleaner hooks 已部署")
+
     # 4. 部署命令
     print("4. 部署命令...")
     # 部署 loadLastSession 命令
@@ -252,9 +262,14 @@ def deploy_to_target(target_dir, python_cmd=None):
                             "type": "command",
                             "command": f"{python_cmd} .claude/scripts/hooks/continuous-learning/session_end_continuous_learning.py",
                             "timeout": 60
+                        },
+                        {
+                            "type": "command",
+                            "command": f"{python_cmd} .claude/scripts/hooks/console-cleaner/clean_console_log.py",
+                            "timeout": 30
                         }
                     ],
-                    "description": "会话结束处理：总结、持续学习"
+                    "description": "会话结束处理：总结、持续学习、清理console.log"
                 }
             ]
         }
@@ -295,6 +310,7 @@ def deploy_to_target(target_dir, python_cmd=None):
     print("  - continuous-learning: 持续学习功能 (/summary-skills)")
     print("  - session_end_summary: 会话总结钩子")
     print("  - session_end_continuous_learning: 会话结束自动触发持续学习")
+    print("  - console-cleaner: 自动扫描并清理前端代码中的 console.log")
     print("  - loadLastSession: 加载上一次会话命令")
     print("  - speckitAgent: SpecKit Agent")
     print()

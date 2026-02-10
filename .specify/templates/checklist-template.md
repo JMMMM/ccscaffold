@@ -32,36 +32,6 @@
 - [ ] CHK005 Item with specific criteria
 - [ ] CHK006 Final item in this category
 
-## Constitution Compliance
-
-- [ ] CHK007 临时文件使用 `.claude/tmp/` 目录结构
-- [ ] CHK008 文档使用中文并放置在 `docs/` 目录
-- [ ] CHK009 脚本文件使用英文命名
-- [ ] CHK010 Python 代码兼容 3.9+
-- [ ] CHK011 无特殊 Unicode 字符
-- [ ] CHK012 组件自包含且依赖明确
-- [ ] CHK013 包含 README.md 文件
-- [ ] CHK014 README 包含功能说明、使用方法、配置说明
-- [ ] CHK015 README 包含依赖关系和注意事项
-- [ ] CHK016 README 与代码实现保持同步
-- [ ] CHK017 功能支持 Windows、Linux、macOS 三个平台
-- [ ] CHK018 默认使用跨平台实现
-- [ ] CHK019 文件路径使用跨平台库 (pathlib, tempfile 等)
-- [ ] CHK020 平台特定优化有性能提升依据 (>30%)
-- [ ] CHK021 平台特定代码有回退机制
-- [ ] CHK022 移植工具提供交互式平台选择
-- [ ] CHK023 在目标平台进行了测试
-- [ ] CHK024 文档说明平台兼容性和限制
-- [ ] CHK025 Git 提交前运行隐私检查脚本
-- [ ] CHK026 无绝对路径包含用户目录名
-- [ ] CHK027 无个人身份信息 (电子邮件、真实姓名、电话等)
-- [ ] CHK028 无认证凭据 (密码、API 密钥、令牌等)
-- [ ] CHK029 敏感配置使用环境变量或配置模板
-- [ ] CHK030 测试数据已脱敏处理
-- [ ] CHK031 日志输出不包含敏感信息
-- [ ] CHK032 `.env` 等敏感文件已添加到 `.gitignore`
-- [ ] CHK033 文档和注释中无真实敏感信息
-
 ## Notes
 
 - Check items off as completed: `[x]`

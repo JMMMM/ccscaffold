@@ -42,6 +42,7 @@ obsidian-notes/
 # CC-Scaffold specific
 # Claude Code 配置和运行时文件（包含敏感信息）
 .claude/
+*.local.json
 
 # 会话记录和历史
 *.session_summary.txt

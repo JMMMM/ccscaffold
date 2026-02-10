@@ -19,8 +19,10 @@ from pathlib import Path
 def get_project_root():
     """获取项目根目录"""
     # 获取脚本所在目录的父目录（项目根目录）
-    script_dir = Path(__file__).parent.absolute()
-    return script_dir.parent
+    # 脚本位置: .claude/scripts/hooks/chat-record/session_end_summary.py
+    # 需要向上 4 层到达项目根目录
+    script_dir = Path(__file__).resolve().parent
+    return script_dir.parent.parent.parent.parent
 
 
 CONFIG = {

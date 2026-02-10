@@ -321,14 +321,14 @@ SUMMARY_PROMPT = """# 角色设定
 1. **准备测试环境**：
    ```bash
    # 使用测试数据验证
-   cp /Users/ming/Work/stock_analysis/.claude/conversations/conversation.txt \
-      /Users/ming/Work/ccscaffold/.claude/conversations/test_conversation.txt
+   cp /path/to/source/.claude/conversations/conversation.txt \
+      /path/to/project/.claude/conversations/test_conversation.txt
    ```
 
 2. **手动触发测试**：
    ```bash
    python3.9 .claude/skills/continuous-learning/scripts/summary_skills.py \
-              --conversation-file /Users/ming/Work/ccscaffold/.claude/conversations/test_conversation.txt
+              --conversation-file /path/to/project/.claude/conversations/test_conversation.txt
    ```
 
 3. **验证输出**：
@@ -340,7 +340,7 @@ SUMMARY_PROMPT = """# 角色设定
 
 ### 测试数据来源
 
-使用 `/Users/ming/Work/stock_analysis/.claude/conversations/conversation.txt` 作为测试数据，该文件包含：
+使用 `/path/to/source/.claude/conversations/conversation.txt` 作为测试数据，该文件包含：
 
 1. **数据日历周末显示问题** - 反复出现的典型案例
    - 用户反复提到：2月1日（星期日）显示红色
@@ -356,7 +356,7 @@ SUMMARY_PROMPT = """# 角色设定
 ### 测试场景
 
 #### 场景 1：检测反复问题
-**输入**: 读取 stock_analysis 的 conversation.txt
+**输入**: 读取示例项目的 conversation.txt
 **预期输出**:
 - 检测到"数据日历周末显示问题"模式
 - 识别出问题关键词："周末"、"显示红色"、"交易日"
@@ -382,7 +382,7 @@ SUMMARY_PROMPT = """# 角色设定
    ```bash
    # 复制测试数据
    mkdir -p .claude/conversations
-   cp /Users/ming/Work/stock_analysis/.claude/conversations/conversation.txt \
+   cp /path/to/source/.claude/conversations/conversation.txt \
       .claude/conversations/test_conversation.txt
    ```
 

@@ -13,6 +13,15 @@ import sys
 from pathlib import Path
 from typing import List, Dict, Optional
 
+# 添加项目根目录到 Python 路径
+project_root = Path(__file__).resolve().parent.parent.parent.parent.parent
+sys.path.insert(0, str(project_root))
+
+from ccscaffold.utils import (
+    detect_available_python_commands,
+    interactive_python_command_selection
+)
+
 
 class ComponentPackager:
     """Claude Code 组件打包器"""
@@ -240,29 +249,21 @@ class ComponentPackager:
                 return None
 
     def prompt_python_command(self) -> str:
-        """提示用户输入 Python 命令"""
+        """提示用户选择 Python 命令"""
         print("\n" + "=" * 80)
         print("Python 版本配置".center(80))
         print("=" * 80)
-        print("\n请输入目标项目的 Python 命令")
-        print("常用选项: python39, python3.9, python3.14, python3")
-        print("例如: 如果目标项目使用 python39 运行脚本，请输入 'python39'\n")
 
-        default = self.functions_config.get("python_command", {}).get("default", "python39")
+        # 使用交互式选择
+        python_cmd = interactive_python_command_selection()
 
-        while True:
-            try:
-                user_input = input(f"Python命令 [默认: {default}]: ").strip()
-                if not user_input:
-                    return default
-                # 验证输入（简单验证）
-                if user_input.replace(".", "").replace("python", "").replace(" ", "") == "":
-                    return user_input.strip()
-                else:
-                    print("[警告] 请输入有效的 Python 命令（如: python39, python3.9）")
-            except (EOFError, KeyboardInterrupt):
-                print("\n[信息] 使用默认值: {default}")
-                return default
+        if python_cmd is None:
+            # 如果用户取消，使用默认值
+            default = self.functions_config.get("python_command", {}).get("default", "python3")
+            print(f"\n使用默认 Python 命令: {default}")
+            return default
+
+        return python_cmd
 
     def display_components(self, components: List[Dict]) -> None:
         """显示组件列表"""

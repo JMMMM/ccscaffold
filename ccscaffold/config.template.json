@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ccscaffold.dev/schema/config.json",
+  "version": "1.0.0",
+  "python": {
+    "command": null,
+    "auto_detect": true,
+    "min_version": "3.9",
+    "candidates": []
+  },
+  "platform": {
+    "name": null,
+    "auto_detect": true
+  },
+  "paths": {
+    "config_dir": null,
+    "temp_dir": ".claude/tmp"
+  }
+}

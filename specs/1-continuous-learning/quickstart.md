@@ -80,7 +80,7 @@ cp ccscaffold/continuous-learning/commands/summary-skills.md .claude/commands/
 ```bash
 # 1. 准备测试数据
 mkdir -p .claude/conversations
-cp /Users/ming/Work/stock_analysis/.claude/conversations/conversation.txt \
+cp /path/to/source/.claude/conversations/conversation.txt \
    .claude/conversations/test_conversation.txt
 
 # 2. 运行分析脚本
@@ -95,7 +95,7 @@ cat .claude/skills/learn/*.md
 
 ### 预期结果
 
-使用 `stock_analysis` 的测试数据，应该检测到：
+使用示例项目的测试数据，应该检测到：
 
 **问题**: 数据日历周末显示问题
 - 用户反复提到周末显示红色的问题

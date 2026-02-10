@@ -143,7 +143,7 @@ tags: [auto-generated, fix-pattern, retry-{count}]
 
 ```bash
 # 使用测试数据验证
-cp /Users/ming/Work/stock_analysis/.claude/conversations/conversation.txt \
+cp /path/to/source/.claude/conversations/conversation.txt \
    .claude/conversations/test_conversation.txt
 ```
 
@@ -168,7 +168,7 @@ cat .claude/skills/learn/*.md
 
 ### 预期结果
 
-使用 `stock_analysis` 的测试数据，应该检测到：
+使用示例项目的测试数据，应该检测到：
 - **问题**: 数据日历周末显示问题
 - **原因**: 交易日判断默认值错误
 - **解决方案**: 修改默认值从 True 改为 False

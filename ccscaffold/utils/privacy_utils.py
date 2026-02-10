@@ -240,8 +240,8 @@ if __name__ == '__main__':
     # 测试脱敏功能
     test_cases = [
         ("Email: user@example.com", "Email: ***@***.***"),
-        ("Path: /Users/ming/work/project", "Path: /Users/***"),
-        ("Path: C:\\Users\\ming\\Documents", "Path: C:\\Users\\***"),
+        ("Path: /Users/developer/work/project", "Path: /Users/***"),
+        ("Path: C:\\Users\\developer\\Documents", "Path: C:\\Users\\***"),
         ("IP: 192.168.1.1", "IP: ***.***.***.***"),
         ("URL: ftp://user:pass@host", "URL: ftp://***:***@host"),
     ]

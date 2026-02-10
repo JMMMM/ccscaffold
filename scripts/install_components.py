@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.9
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 CC-Scaffold 组件安装脚本
@@ -9,6 +9,14 @@ import os
 import sys
 import shutil
 from pathlib import Path
+
+# 添加项目根目录到 Python 路径
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from ccscaffold.utils import (
+    detect_available_python_commands,
+    interactive_python_command_selection
+)
 
 
 def get_ccscaffold_root():
@@ -79,7 +87,7 @@ def install_speckit_agent(target_project_root):
     print("SpecKit Agent 安装完成！")
 
 
-def update_settings_json(target_project_root):
+def update_settings_json(target_project_root, python_cmd):
     """更新 settings.json 配置"""
     target_root = Path(target_project_root)
     settings_file = target_root / '.claude' / 'settings.json'
@@ -95,7 +103,7 @@ def update_settings_json(target_project_root):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": "python39 .claude/skills/chat-recorder/chat_recorder.py"
+                            "command": f"{python_cmd} .claude/skills/chat-recorder/chat_recorder.py"
                         }
                     ],
                     "description": "记录用户输入"
@@ -107,7 +115,7 @@ def update_settings_json(target_project_root):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": "python39 .claude/skills/chat-recorder/chat_recorder.py"
+                            "command": f"{python_cmd} .claude/skills/chat-recorder/chat_recorder.py"
                         }
                     ],
                     "description": "记录AI工具调用"
@@ -119,11 +127,11 @@ def update_settings_json(target_project_root):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": "python39 .claude/skills/chat-recorder/chat_recorder.py"
+                            "command": f"{python_cmd} .claude/skills/chat-recorder/chat_recorder.py"
                         },
                         {
                             "type": "command",
-                            "command": "python39 .claude-hooks/session_end_summary.py",
+                            "command": f"{python_cmd} .claude-hooks/session_end_summary.py",
                             "timeout": 10
                         }
                     ],
@@ -158,6 +166,15 @@ def main():
     print(f"目标项目路径: {target_root}")
     print()
 
+    # Python 命令选择
+    python_cmd = interactive_python_command_selection()
+    if python_cmd is None:
+        print("未选择 Python 命令，安装已取消")
+        return
+
+    print(f"\n使用 Python 命令: {python_cmd}")
+    print()
+
     # 确认安装
     response = input("是否继续安装？(y/n): ")
     if response.lower() != 'y':
@@ -173,7 +190,7 @@ def main():
     print()
     install_speckit_agent(target_root)
     print()
-    update_settings_json(target_root)
+    update_settings_json(target_root, python_cmd)
     print()
 
     print("=" * 60)
@@ -186,6 +203,8 @@ def main():
     print("  - chat-record: 会话记录功能")
     print("  - speckitAgent: SpecKit Agent")
     print("  - loadLastSession: 加载上一次会话命令")
+    print()
+    print(f"配置的 Python 命令: {python_cmd}")
     print()
 
 
