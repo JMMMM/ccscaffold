@@ -21,7 +21,7 @@ def get_ccscaffold_root():
 
 def detect_python_command():
     """检测可用的 Python 命令"""
-    candidates = ['python3.9', 'python39', 'python3', 'python']
+    candidates = ['python3.9', 'python3.9', 'python3', 'python']
     available = []
 
     for cmd in candidates:
@@ -48,8 +48,8 @@ def select_python_command():
 
     if not available:
         print("警告: 未检测到可用的 Python 命令")
-        print("请手动输入 Python 命令（如: python39, python3.9, python3）")
-        return input("Python 命令: ").strip() or "python39"
+        print("请手动输入 Python 命令（如: python3.9, python3.9, python3）")
+        return input("Python 命令: ").strip() or "python3.9"
 
     print("\n可用的 Python 版本:")
     for i, (cmd, version) in enumerate(available, 1):
@@ -57,17 +57,17 @@ def select_python_command():
     print(f"  {len(available) + 1}. 自定义")
 
     while True:
-        choice = input(f"\n请选择 [1-{len(available) + 1}]，默认使用 python39: ").strip()
+        choice = input(f"\n请选择 [1-{len(available) + 1}]，默认使用 python3.9: ").strip()
 
         if not choice:
-            return "python39"
+            return "python3.9"
 
         try:
             idx = int(choice) - 1
             if 0 <= idx < len(available):
                 return available[idx][0]
             elif idx == len(available):
-                return input("请输入 Python 命令: ").strip() or "python39"
+                return input("请输入 Python 命令: ").strip() or "python3.9"
             else:
                 print("无效的选择，请重新输入")
         except ValueError:
@@ -106,13 +106,13 @@ def deploy_to_target(target_dir, python_cmd=None):
 
     # 1. 部署 chat-record skill
     print("1. 部署会话记录功能...")
-    chat_recorder_src = ccscaffold_root / '.claude' / 'skills' / 'chat-recorder'
-    chat_recorder_dst = target_skills / 'chat-recorder'
+    chat_recorder_src = ccscaffold_root / '.claude' / 'skills' / 'chat-record'
+    chat_recorder_dst = target_skills / 'chat-record'
 
     if chat_recorder_dst.exists():
         shutil.rmtree(chat_recorder_dst)
     shutil.copytree(chat_recorder_src, chat_recorder_dst)
-    print(f"   ✓ chat-recorder skill 已部署")
+    print(f"   ✓ chat-record skill 已部署")
 
     # 2. 部署 continuous-learning skill
     print("2. 部署持续学习功能...")
@@ -215,7 +215,7 @@ def deploy_to_target(target_dir, python_cmd=None):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": f"{python_cmd} .claude/skills/chat-recorder/chat_recorder.py"
+                            "command": f"{python_cmd} .claude/skills/chat-record/chat_recorder.py"
                         }
                     ],
                     "description": "创建新对话记录文件"
@@ -227,7 +227,7 @@ def deploy_to_target(target_dir, python_cmd=None):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": f"{python_cmd} .claude/skills/chat-recorder/chat_recorder.py"
+                            "command": f"{python_cmd} .claude/skills/chat-record/chat_recorder.py"
                         }
                     ],
                     "description": "记录用户输入"
@@ -239,7 +239,7 @@ def deploy_to_target(target_dir, python_cmd=None):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": f"{python_cmd} .claude/skills/chat-recorder/chat_recorder.py"
+                            "command": f"{python_cmd} .claude/skills/chat-record/chat_recorder.py"
                         }
                     ],
                     "description": "记录AI工具调用"
@@ -251,7 +251,7 @@ def deploy_to_target(target_dir, python_cmd=None):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": f"{python_cmd} .claude/skills/chat-recorder/chat_recorder.py"
+                            "command": f"{python_cmd} .claude/skills/chat-record/chat_recorder.py"
                         },
                         {
                             "type": "command",
@@ -329,7 +329,7 @@ def main():
         print()
         print("参数:")
         print("  目标目录   - 要部署到的项目目录")
-        print("  Python命令 - 可选，指定 Python 命令（如: python3.9, python39, python3）")
+        print("  Python命令 - 可选，指定 Python 命令（如: python3.9, python3.9, python3）")
         print("              如果不指定，会自动检测并提示选择")
         print()
         print("示例:")

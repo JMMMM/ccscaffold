@@ -41,12 +41,12 @@ def install_chat_record(target_project_root):
     target_commands.mkdir(parents=True, exist_ok=True)
 
     # 复制 skill
-    chat_recorder_src = ccscaffold_root / 'chat-record' / 'skills' / 'chat-recorder'
-    chat_recorder_dst = target_skills / 'chat-recorder'
+    chat_recorder_src = ccscaffold_root / 'chat-record' / 'skills' / 'chat-record'
+    chat_recorder_dst = target_skills / 'chat-record'
     if chat_recorder_dst.exists():
         shutil.rmtree(chat_recorder_dst)
     shutil.copytree(chat_recorder_src, chat_recorder_dst)
-    print(f"  ✓ 已复制 chat-recorder skill")
+    print(f"  ✓ 已复制 chat-record skill")
 
     # 复制 hooks
     hooks = ['session_end_summary.py']
@@ -103,7 +103,7 @@ def update_settings_json(target_project_root, python_cmd):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": f"{python_cmd} .claude/skills/chat-recorder/chat_recorder.py"
+                            "command": f"{python_cmd} .claude/skills/chat-record/chat_recorder.py"
                         }
                     ],
                     "description": "记录用户输入"
@@ -115,7 +115,7 @@ def update_settings_json(target_project_root, python_cmd):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": f"{python_cmd} .claude/skills/chat-recorder/chat_recorder.py"
+                            "command": f"{python_cmd} .claude/skills/chat-record/chat_recorder.py"
                         }
                     ],
                     "description": "记录AI工具调用"
@@ -127,7 +127,7 @@ def update_settings_json(target_project_root, python_cmd):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": f"{python_cmd} .claude/skills/chat-recorder/chat_recorder.py"
+                            "command": f"{python_cmd} .claude/skills/chat-record/chat_recorder.py"
                         },
                         {
                             "type": "command",

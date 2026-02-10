@@ -43,7 +43,7 @@ python /path/to/ccscaffold/scripts/migrate_experience.py
 1. **复制文件到项目**:
    ```bash
    # 复制 skills
-   cp -r chat-record/skills/chat-recorder .claude/skills/
+   cp -r chat-record/skills/chat-record .claude/skills/
 
    # 复制 hooks（推荐使用 .claude/scripts/hooks 目录）
    mkdir -p .claude/scripts/hooks/chat-record
@@ -63,23 +63,23 @@ python /path/to/ccscaffold/scripts/migrate_experience.py
        "UserPromptSubmit": [
          {
            "type": "command",
-           "command": "python39 .claude/skills/chat-recorder/chat_recorder.py"
+           "command": "python3.9 .claude/skills/chat-record/chat_recorder.py"
          }
        ],
        "PostToolUse": [
          {
            "type": "command",
-           "command": "python39 .claude/skills/chat-recorder/chat_recorder.py"
+           "command": "python3.9 .claude/skills/chat-record/chat_recorder.py"
          }
        ],
        "Stop": [
          {
            "type": "command",
-           "command": "python39 .claude/skills/chat-recorder/chat_recorder.py"
+           "command": "python3.9 .claude/skills/chat-record/chat_recorder.py"
          },
          {
            "type": "command",
-           "command": "python39 .claude/scripts/hooks/chat-record/session_end_summary.py",
+           "command": "python3.9 .claude/scripts/hooks/chat-record/session_end_summary.py",
            "timeout": 10
          }
        ]
@@ -172,7 +172,7 @@ rm .claude/conversations/conversation.txt
 ```
 chat-record/
 ├── skills/
-│   └── chat-recorder/          # 会话记录技能
+│   └── chat-record/            # 会话记录技能
 │       ├── chat_recorder.py    # 主脚本
 │       ├── chat_recorder_debug.py  # 调试脚本
 │       └── deploy.py           # 部署脚本
@@ -183,8 +183,8 @@ chat-record/
 ├── docs/
 │   ├── chat-context-manager.md    # 上下文管理文档
 │   ├── chat-context-usage.md      # 使用说明
-│   ├── chat-recorder-deployment.md# 部署文档
-│   └── chat-recorder-fixes.md     # 修复记录
+│   ├── chat-record-deployment.md # 部署文档
+│   └── chat-record-fixes.md      # 修复记录
 └── README.md                    # 本文件
 ```
 
@@ -247,8 +247,8 @@ chat-record/
 
 - [聊天上下文管理详细文档](docs/chat-context-manager.md)
 - [使用说明](docs/chat-context-usage.md)
-- [部署文档](docs/chat-recorder-deployment.md)
-- [修复记录](docs/chat-recorder-fixes.md)
+- [部署文档](docs/chat-record-deployment.md)
+- [修复记录](docs/chat-record-fixes.md)
 
 ## 更新日志
 

@@ -92,7 +92,7 @@ python scripts/remove_functions.py /path/to/target/project
 
 ### 1. 会话记录 (chat-record)
 
-- **位置**: `.claude/skills/chat-recorder/`
+- **位置**: `.claude/skills/chat-record/`
 - **功能**: 自动记录所有对话内容到 `conversation.txt`
 - **特性**:
   - 仅维护一份会话文件
@@ -124,7 +124,7 @@ CC-Scaffold 采用以下目录结构组织组件：
 ```
 .claude/
 ├── skills/           # 技能脚本
-│   └── chat-recorder/
+│   └── chat-record/
 ├── scripts/          # Hooks 和其他脚本（推荐位置）
 │   └── hooks/
 │       └── chat-record/
@@ -172,7 +172,7 @@ python scripts/remove_functions.py /path/to/target/project
 
 ```bash
 # 删除 skills
-rm -rf .claude/skills/chat-recorder
+rm -rf .claude/skills/chat-record
 
 # 删除 scripts/hooks
 rm -rf .claude/scripts/hooks/chat-record

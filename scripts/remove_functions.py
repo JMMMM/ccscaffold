@@ -28,14 +28,14 @@ def remove_from_target(target_dir):
 
     # 1. 移除 chat-record skill
     print("1. 移除会话记录功能...")
-    chat_recorder_dir = target_root / '.claude' / 'skills' / 'chat-recorder'
+    chat_recorder_dir = target_root / '.claude' / 'skills' / 'chat-record'
 
     if chat_recorder_dir.exists():
         shutil.rmtree(chat_recorder_dir)
-        print(f"   ✓ chat-recorder skill 已移除")
+        print(f"   ✓ chat-record skill 已移除")
         removed_items.append(str(chat_recorder_dir))
     else:
-        print(f"   - chat-recorder skill 不存在，跳过")
+        print(f"   - chat-record skill 不存在，跳过")
 
     # 2. 移除 hooks
     print("2. 移除 hooks...")
@@ -106,7 +106,7 @@ def remove_from_target(target_dir):
                         for hook in hooks:
                             command = hook.get('command', '')
                             # 如果不是我们的 hook，保留它
-                            if 'chat-recorder' not in command and 'session_end_summary' not in command:
+                            if 'chat-record' not in command and 'session_end_summary' not in command:
                                 new_hooks.append(hook)
                             else:
                                 modified = True

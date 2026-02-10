@@ -2,20 +2,12 @@
 
 <!--
 Sync Impact Report:
-- Version change: 1.3.0 -> 1.4.0
-- Added Principle X: 隐私保护与信息安全原则 (Privacy Protection and Information Security)
-  - Git 提交隐私检查强制要求 (Git Commit Privacy Inspection Requirements)
-  - 敏感信息识别与处理规范 (Sensitive Information Identification and Handling)
-  - 隐私合规审查清单 (Privacy Compliance Review Checklist)
-  - 数据脱敏与匿名化要求 (Data Masking and Anonymization Requirements)
-- Updated all templates to include privacy compliance checks
-- Template review:
-  - plan-template.md - 已添加隐私合规检查项
-  - spec-template.md - 已添加隐私需求 (FR-018 ~ FR-022)
-  - tasks-template.md - 已添加隐私合规清单
-  - checklist-template.md - 已添加隐私检查项 (CHK025 ~ CHK033)
-  - agent-file-template.md - 已添加隐私安全规范
-- Follow-up: 审查现有代码和提交历史,确保符合新的隐私保护要求
+- Version change: 1.4.0 -> 1.4.1
+- Added governance rule: 宪章同步要求 (Constitution Synchronization Requirement)
+  - 修改 `.specify/memory/constitution.md` 时必须同步更新项目根目录的 `constitution.md`
+  - 保持两个文档完全一致
+- Template review: 无需更新模板
+- Follow-up: 无
 -->
 
 ## Core Principles
@@ -877,6 +869,7 @@ component-name/
 2. 修订后必须更新版本号
 3. 必须更新所有相关模板和文档
 4. 必须提供迁移计划(如需要)
+5. **宪章同步要求**: 修改 `.specify/memory/constitution.md` 时,必须同步更新项目根目录下的 `constitution.md`,保持两个文档完全一致
 
 ### 版本控制规则
 
@@ -907,4 +900,4 @@ component-name/
 
 ---
 
-**Version**: 1.4.0 | **Ratified**: 2025-02-09 | **Last Amended**: 2026-02-09
+**Version**: 1.4.1 | **Ratified**: 2025-02-09 | **Last Amended**: 2026-02-10
