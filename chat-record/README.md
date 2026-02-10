@@ -7,16 +7,20 @@
 ### 主要特点
 
 - **单一文件**: 仅维护一份 `conversation.txt` 文件
+- **追加记录**: 持续追加写入，不重置
 - **自动记录**: 通过 Hooks 自动捕获所有对话
 - **会话总结**: SessionEnd 时自动生成会话总结
 - **文件修改记录**: 自动记录文件修改历史
 - **手动加载**: 通过命令手动加载上一次会话
+- **过滤读命令**: 在 matcher 配置层面过滤 Read、Grep、Glob 等读命令，减少存储压力
+- **数量限制**: 保留最近 50 条记录
 
 ### 工作流程
 
-1. **会话进行中**: 所有对话记录到 `conversation.txt`
-2. **会话结束时**: 自动生成总结到 `session_summary.txt`
-3. **下次会话开始**: 使用 `/loadLastSession` 命令加载上一次会话
+1. **会话进行中**: 所有对话持续追加到 `conversation.txt`
+2. **自动限制**: 保持最近 50 条记录，超出自动删除旧记录
+3. **会话结束时**: 自动生成总结到 `session_summary.txt`
+4. **下次使用**: 直接继续使用，历史记录自动保留
 
 ## 使用方法
 
@@ -62,30 +66,58 @@ python /path/to/ccscaffold/scripts/migrate_experience.py
      "hooks": {
        "UserPromptSubmit": [
          {
-           "type": "command",
-           "command": "python3.9 .claude/skills/chat-record/chat_recorder.py"
+           "matcher": "*",
+           "hooks": [
+             {
+               "type": "command",
+               "command": "python3.9 .claude/skills/chat-record/chat_recorder.py"
+             }
+           ],
+           "description": "记录用户输入"
          }
        ],
        "PostToolUse": [
          {
-           "type": "command",
-           "command": "python3.9 .claude/skills/chat-record/chat_recorder.py"
+           "matcher": "^(?!Read|Grep|Glob|WebSearch|WebFetch|TaskOutput|mcp__|4_5v_mcp__|context7|web-reader|zai-mcp-server).*$",
+           "hooks": [
+             {
+               "type": "command",
+               "command": "python3.9 .claude/skills/chat-record/chat_recorder.py"
+             }
+           ],
+           "description": "记录AI工具调用（过滤读命令）"
          }
        ],
        "Stop": [
          {
-           "type": "command",
-           "command": "python3.9 .claude/skills/chat-record/chat_recorder.py"
-         },
-         {
-           "type": "command",
-           "command": "python3.9 .claude/scripts/hooks/chat-record/session_end_summary.py",
-           "timeout": 10
+           "matcher": "*",
+           "hooks": [
+             {
+               "type": "command",
+               "command": "python3.9 .claude/skills/chat-record/chat_recorder.py"
+             },
+             {
+               "type": "command",
+               "command": "python3.9 .claude/scripts/hooks/chat-record/session_end_summary.py",
+               "timeout": 10
+             },
+             {
+               "type": "command",
+               "command": "python3.9 .claude/scripts/hooks/console-cleaner/clean_console_log.py",
+               "timeout": 30
+             }
+           ],
+           "description": "会话结束处理"
          }
        ]
      }
    }
    ```
+
+   **最佳实践**: 在 `PostToolUse` 中使用 `matcher` 正则表达式过滤读命令，而不是在 Python 脚本内部实现过滤。这样可以：
+   - 避免不必要的脚本执行
+   - 提升系统性能
+   - 更符合 Claude Code 的设计理念
 
 3. **重启 Claude Code**
 
@@ -114,6 +146,37 @@ def get_conversation_file():
     # 修改为自定义路径
     return custom_path / 'conversation.txt'
 ```
+
+#### 自定义过滤器（最佳实践）
+
+**推荐方式**: 在 `settings.json` 的 `matcher` 中过滤
+
+使用正则表达式的负向预查来排除不需要记录的工具：
+
+```json
+{
+  "PostToolUse": [
+    {
+      "matcher": "^(?!Read|Grep|Glob).*$",
+      "hooks": [...]
+    }
+  ]
+}
+```
+
+**优势**:
+- 配置层面过滤，避免脚本执行
+- 更好的性能
+- 符合 Claude Code 设计理念
+
+**过滤的常见读命令**:
+- `Read` - 读取文件
+- `Grep` - 搜索文件内容
+- `Glob` - 文件模式匹配
+- `WebSearch` - 网页搜索
+- `WebFetch` - 网页获取
+- `TaskOutput` - 获取任务输出
+- `mcp__*` - MCP 服务器工具
 
 #### 清空会话记录
 
@@ -194,7 +257,7 @@ chat-record/
 
 ### conversation.txt
 
-存储当前会话的所有对话内容。每次新会话时保留上次内容，用户可手动清空或使用 `/loadLastSession` 命令加载。
+持续存储所有对话内容。保留最近 50 条记录，超出自动删除旧记录。无需手动清空，系统自动维护。
 
 ### session_summary.txt
 
@@ -252,6 +315,16 @@ chat-record/
 
 ## 更新日志
 
+- v2.2.0 (2025-02-10): 追加记录版本
+  - 移除 SessionStart 钩子，不再重置会话文件
+  - 改为持续追加写入模式
+  - 记录数量限制提升至 50 条
+  - 保留最近 50 条对话记录，自动清理旧记录
+- v2.1.0 (2025-02-10): 读命令过滤版本
+  - 新增读命令过滤功能，自动过滤 Read、Grep、Glob、WebSearch 等读命令
+  - 减少 conversation.txt 存储压力
+  - **最佳实践**: 在 settings.json 的 matcher 中实现过滤，而非 Python 脚本内部
+  - 支持过滤的命令列表：Read、Grep、Glob、WebSearch、WebFetch、Context7 相关工具、TaskOutput 等
 - v2.0.0 (2025-02-09): 优化版本
   - 仅维护一份 conversation.txt 文件
   - 新增 SessionEnd 钩子自动生成会话总结

@@ -41,13 +41,27 @@ def init_config():
 
 
 def read_file_content(file_path):
-    """读取文件内容"""
+    """读取文件内容，处理编码错误"""
     file_path = Path(file_path)
     if not file_path.exists():
         return None
 
-    with open(file_path, "r", encoding="utf-8") as f:
-        content = f.read()
+    # 尝试多种编码方式读取文件
+    encodings = ['utf-8', 'utf-8-sig', 'gbk', 'gb2312', 'latin1']
+
+    content = None
+    for encoding in encodings:
+        try:
+            with open(file_path, "r", encoding=encoding) as f:
+                content = f.read()
+            break
+        except (UnicodeDecodeError, UnicodeError):
+            continue
+
+    # 如果所有编码都失败，使用 utf-8 并忽略错误
+    if content is None:
+        with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+            content = f.read()
 
     if not content.strip():
         return None
